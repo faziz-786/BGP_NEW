@@ -1,0 +1,191 @@
+Iniintil config 
+-----------------
+
+
+conf t
+hostname R1
+int loopback 0 
+ip address 1.1.1.1 255.0.0.0
+int loopback 1 
+ip address 11.1.1.1 255.255.255.0
+int loopback 99 
+ip address 192.168.1.1 255.255.255.0
+int e0/0 
+ip address 192.1.12.1 255.255.255.0
+int e0/1 
+ip address 192.1.11.1 255.255.255.0
+exit
+
+conf t
+hostname R2
+interface loopback 0
+ip address 2.2.2.2 255.0.0.0
+interface loopback 1
+ip address 22.2.2.2 255.255.255.0
+interface loopback 10 
+ip address 10.2.2.2 255.255.255.255
+interface loopback 99
+ip adddress 192.168.2.2 255.255.255.255
+int e0/0
+ip address 192.1.12.2 255.255.255.0
+no sh 
+int e0/1 
+ip address 192.1.11.2 255.255.255.0
+no sh 
+int e0/2
+ip address 192.168.23.2 255.255.255.0
+no sh 
+int e0/3
+ip address 192.168.24.2 255.255.255.0
+no sh 
+exit 
+
+conf t
+hostname R3
+interface loopback 0
+ip address 3.3.3.3 255.0.0.0
+interface loopback 1
+ip address 33.3.3.3 255.255.255.0
+interface loopback 10 
+ip address 10.3.3.3 255.255.255.255
+int e0/0
+ip address 192.1.23.3 255.255.255.0
+no sh 
+int e0/1 
+ip address 192.168.34.3 255.255.255.0
+no sh 
+int e0/2
+ip address 192.1.35.2 255.255.255.0
+no sh 
+exit 
+
+conf t
+hostname R4
+interface loopback 0
+ip address 4.4.4.4 255.0.0.0
+interface loopback 1
+ip address 44.4.4.4 255.255.255.0
+interface loopback 10 
+ip address 10.4.4.4 255.255.255.255
+int e0/0
+ip address 192.1.24.4 255.255.255.0
+no sh 
+int e0/1 
+ip address 192.168.34.4 255.255.255.0
+no sh 
+int e0/2
+ip address 192.1.46.4 255.255.255.0
+no sh 
+exit 
+
+conf t
+hostname R5
+interface loopback 0
+ip address 5.5.5.5 255.0.0.0
+interface loopback 1
+ip address 55.5.5.5 255.255.255.0
+interface loopback 10 
+ip address 10.5.5.5 255.255.255.255
+int e0/0
+ip address 192.1.35.5 255.255.255.0
+no sh 
+exit 
+
+conf t
+hostname R6
+interface loopback 0
+ip address 6.6.6.6 255.0.0.0
+interface loopback 1
+ip address 66.6.6.6 255.255.255.0
+int e0/0
+ip address 192.1.46.6 255.255.255.0
+no sh 
+exit 
+
+---------------------
+LAB1
+---------------------
+R3
+
+router bgp 200
+bgp router-id 33.33.33.33
+neighbor 192.1.35.5 remote-as 500
+network 3.0.0.0
+network 33.3.3.0 mask 255.255.255.0 
+
+R5
+router bgp 500
+bgp router-id 55.55.55.55
+neighbor 192.1.35.3 remote-as 200
+network 5.0.0.0
+network 55.5.5.0 mask 255.255.255.0 
+
+
+R4
+router bgp 200
+bgp router-id 44.44.44.44
+neighbour 192.1.46.6 remote-as 600
+network 4.0.0.0
+network 44.4.4.0 mask 255.255.255.0
+
+R6
+router bgp 600
+bgp router-id 66.66.66.66
+neighbor 192.1.46.4 remote-as 200
+network 6.0.0.0
+network 66.6.6.0 mask 255.255.255.0
+
+R1
+router bgp 100
+ bgp log-neighbor-changes
+ network 1.0.0.0
+ network 11.1.1.0 mask 255.255.255.0
+ neighbor 192.1.11.2 remote-as 200
+ neighbor 192.1.12.2 remote-as 200
+
+
+ R4
+ router bgp 200
+ bgp router-id 44.44.44.44
+ bgp log-neighbor-changes
+ network 4.0.0.0
+ network 44.4.4.0 mask 255.255.255.0
+ neighbor 192.1.46.6 remote-as 600
+
+-------
+ LAB2
+-------
+
+R1
+
+router bgp 100
+neighbor 192.1.11.2 password Test@123
+neighbor 192.1.12.2 password Test@123
+
+R2
+
+router bgp 200
+neighbor 192.1.11.1 password Test@123
+neighbor 192.1.12.1 password Test@123
+
+R3
+
+router bgp 200
+neighbor 192.1.35.5 password Test@123
+
+
+R5
+
+router bgp 500
+neighbor 192.1.35.3 password Test@123
+
+R4
+
+router bgp 200
+neighbor 192.1.46.6 password Test@123
+
+
+R6
+
+router bgp 600
+neighbor 192.1.46.4 password Test@123
